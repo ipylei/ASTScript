@@ -1,5 +1,6 @@
-/* i确实没变，但是t变了!
-function func(t) {
+
+//i确实没变，但是t变了!
+/* function func(t) {
     var i = t[0], c = Qu(55, []), l = s;
     for (; $u(10, [l, i[L(nt, rt, h)]]); l = $u(4, [l, a])) {
         !function () {
@@ -13,8 +14,17 @@ function func(t) {
             };
         }();
     }
+} */
+
+// var i = 2;
+var i;
+for (; ;) {
+    var i = 0;
+    m[2] = i;
 }
- */
+list[5] = i;
+
+
 
 
 /* var a_9;
@@ -36,7 +46,7 @@ console.log(d[0]);
 
 zx = ($ = 9) * (f = 10)
 zy = f * 20;
-var f, $; 
+var f, $;
 */
 
 
@@ -50,4 +60,4 @@ var f, $;
 }
  */
 
-var _0x574af7 = "object",_0x5924c3 = typeof exports,_0x21662a = _0x574af7 == _0x5924c3;
+// var _0x574af7 = "object",_0x5924c3 = typeof exports,_0x21662a = _0x574af7 == _0x5924c3;

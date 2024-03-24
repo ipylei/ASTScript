@@ -28,21 +28,14 @@ const pluginMergeObjProperty = {
    "VariableDeclarator|AssignmentExpression"(path) {
       let { node, parentPath, scope } = path;
       const { id, init, left, right, operator } = node;
-      if(operator && operator != "="){
-         return;
-      }
-      
+      //如果有操作符则必须为"=", 而不是a+=2;
+      if (operator && operator != "=") { return; }
+
       //必须不能为空：如var N;
-      if (!init && !right) {
-         return;
-      }
+      if (!init && !right) { return; }
       //右边必须是{}
-      if (init && !types.isObjectExpression(init)) {
-         return;
-      }
-      if (right && !types.isObjectExpression(right)) {
-         return;
-      }
+      if (init && !types.isObjectExpression(init)) { return; }
+      if (right && !types.isObjectExpression(right)) { return; }
 
       let name = id ? id.name : left.name;
       let properties = init ? init.properties : right.properties; //专门用来存放属性及值的列表
@@ -73,7 +66,7 @@ const pluginMergeObjProperty = {
           */
 
          // 扩展：
-         // 前面只能处理：    N['AgHaJ'] = b('2', '4fPv');  N['VtmkW'] = b('3', 'N6]X');
+         // 原来只能处理：    N['AgHaJ'] = b('2', '4fPv');  N['VtmkW'] = b('3', 'N6]X');
          // 未对以下进行兼容： N.VmWw = b('4', 'Nex5');     N.XmMb = b('4', '6[Gx');
          if (types.isIdentifier(object, { name: name }) && types.isStringLiteral(property)) {
             properties.push(types.ObjectProperty(property, right));

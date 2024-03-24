@@ -35,6 +35,8 @@ const pluginVarReferenceRestore = {
     // 插件1：https://wx.zsxq.com/dweb2/index/topic_detail/584418484544454
     VariableDeclarator(path) {
         let { scope, parentPath } = path;
+        // console.log(parentPath.toString());
+
         let { id, init } = path.node;
         //var a=x; 左边a必须为标识符，右边必须是纯节点
         if (!types.isIdentifier(id) || !isNodePure(init, scope)) {
@@ -48,7 +50,12 @@ const pluginVarReferenceRestore = {
 
         //如果没改变过; 或者只改变了一次(var a = 10; var a = 5;) 
         // if (constant || (constantViolations.length === 1 && constantViolations[0] == path)) {
-        if (constant) {
+        let cicleChange = constantViolations.length === 1 && constantViolations[0] == path
+            && parentPath.parentPath.isBlockStatement()
+            && (parentPath.parentPath.parentPath.isForStatement() || parentPath.parentPath.parentPath.isWhileStatement());
+        //如果是在循环体中重复定义，且原始并未初始化则可以还原 (var a; var a = 5;)
+        let valid = constant || (cicleChange && binding.path.node.init == null);
+        if (valid) {
             var referCount = referencePaths.length;
             for (let referPath of referencePaths) {
                 console.log("变量声明语句还原", referPath.toString(), '<--->', generate(init).code);
@@ -94,8 +101,8 @@ const pluginVarReferenceRestore = {
 
             if (referCount == 0) {
                 //满足这个条件时，顺便将绑定path也删除
-                if(binding.path.isVariableDeclarator() && binding.path.node.init == null){
-                    binding.path.remove(); 
+                if (binding.path.isVariableDeclarator() && binding.path.node.init == null) {
+                    binding.path.remove();
                 }
 
                 //排除一些情况：($ = 9) * (f = 10)
