@@ -83,6 +83,18 @@ const pluginRemoveDeadCode = {
         path.remove();
     },
 
+    // case continue之后的语句删除
+    "ContinueStatement"(path){
+        if(!path.parentPath.isSwitchCase()){
+            return;
+        }
+        //获取后续的兄弟节点
+        let allNextSiblings = path.getAllNextSiblings();
+        for(let nextSibling of allNextSiblings){
+            nextSibling.remove();
+        }
+    },
+
     //变量声明语句
     "VariableDeclarator"(path) {
         let { node, scope, parentPath } = path;

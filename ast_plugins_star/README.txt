@@ -25,26 +25,15 @@ ob混淆专题：https://wx.zsxq.com/dweb2/index/tags/ob%E6%B7%B7%E6%B7%86%E4%B8
     https://articles.zsxq.com/id_k11ol71z23bw.html
 
 有混淆JS的海外网站：https://t.zsxq.com/16cuXpbcI
+毛子写的阿卡迈文章：https://github.com/rastvl/akamai-deobfuscator-2.0
 
 
 
 
-可能会常用的插件
-    5.Array类型元素还原
-        https://wx.zsxq.com/dweb2/index/topic_detail/218584215241451
-        
-    6.Object对象还原
-        Object的value字段是常量：https://wx.zsxq.com/dweb2/index/topic_detail/212818212884451
-        ob混淆的Object还原优化：https://wx.zsxq.com/dweb2/index/topic_detail/585411212225824
-
-    7.自执行函数实参还原与替换：(实参是字面量还原？)
-        https://wx.zsxq.com/dweb2/index/topic_detail/418484418415828
- 
-
-        
 
 
-    
+
+
 
 不太常用的插件：
     13.合并变量的声明与定义 
@@ -54,7 +43,7 @@ ob混淆专题：https://wx.zsxq.com/dweb2/index/tags/ob%E6%B7%B7%E6%B7%86%E4%B8
         https://wx.zsxq.com/dweb2/index/topic_detail/412248822144118  (可以使用变量引用还原代替)           
     
     23.万能数组还原 
-        https://wx.zsxq.com/dweb2/index/topic_detail/184211511258112  (缺点：这个数组不能有改变)
+        https://wx.zsxq.com/dweb2/index/topic_detail/184211511258112  (缺点：这个数组不能有改变, 如:a = [1, 2, 3]; a[2]=3)
 
     24.部分常量运算合并 (部分常量折叠)
         https://wx.zsxq.com/dweb2/index/topic_detail/415442454152148 (感觉用处不大)

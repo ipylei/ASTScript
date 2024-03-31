@@ -1,6 +1,9 @@
 /* 
-    插件：无
-    缺点：未考虑到其他情况
+    插件 6.Object对象还原
+        Object的value字段是常量：https://wx.zsxq.com/dweb2/index/topic_detail/212818212884451
+        ob混淆的Object还原优化：https://wx.zsxq.com/dweb2/index/topic_detail/585411212225824
+    
+    缺点：未考虑到其他再复杂点的情况
         1.function(){return a&b&c;}
 
     before:

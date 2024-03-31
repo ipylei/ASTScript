@@ -1,3 +1,8 @@
+/* 
+    插件：7.自执行函数实参还原与替换：(实参是字面量还原？)
+        https://wx.zsxq.com/dweb2/index/topic_detail/418484418415828
+*/
+
 const parser = require("@babel/parser");
 const traverse = require("@babel/traverse").default;
 const types = require("@babel/types");

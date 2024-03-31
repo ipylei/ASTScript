@@ -23,15 +23,18 @@ console.log("encodeFile ===> ", encodeFile);
 
 const code = fs.readFileSync(encodeFile, "utf-8");
 let ast = parse(code);
-const equalPlugin = {
-    AssignmentExpression: {
-        exit(path) {
-        }
+const Plugin = {
+    FunctionDeclaration(path) {
+        let { node, parentPath, scope } = path;
+
+        let binding = scope.getBinding("a");
+        let pbinding = parentPath.scope.getBinding("a");
+        console.log("============");
     }
 }
 
 
-traverse(ast, equalPlugin);
+traverse(ast, Plugin);
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
 const ouput = generate(ast, opts = {

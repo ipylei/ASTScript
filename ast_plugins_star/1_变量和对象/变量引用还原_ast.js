@@ -1,7 +1,9 @@
 /* 
-    插件1：https://wx.zsxq.com/dweb2/index/topic_detail/584418484544454
-        介绍：变量定义初始化为常量时的还原，该变量在其作用域没有发生更改的时候，可以通过绑定来进行还原
+    插件1(变量定义还原)：https://wx.zsxq.com/dweb2/index/topic_detail/584418484544454
+        新：https://wx.zsxq.com/dweb2/index/topic_detail/8855812258458282
+
     插件1(赋值语句还原)：https://wx.zsxq.com/dweb2/index/topic_detail/584418822184214
+        新：https://wx.zsxq.com/dweb2/index/topic_detail/8855812258188552
 
     before
 
@@ -104,8 +106,8 @@ const pluginVarReferenceRestore = {
                 if (binding.path.isVariableDeclarator() && binding.path.node.init == null) {
                     binding.path.remove();
                 }
-
-                //排除一些情况：($ = 9) * (f = 10)
+                
+                //只处理在完整句子中的情况，排除一些情况：($ = 9) * (f = 10)
                 if (parentPath.isExpressionStatement() || parentPath.isSequenceExpression()) {
                     path.remove(); //没有被引用，或者替换完成，可直接删除
                 }

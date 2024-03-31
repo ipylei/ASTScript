@@ -1,5 +1,6 @@
 /* 
-    插件 
+    插件 5.Array类型元素还原
+        https://wx.zsxq.com/dweb2/index/topic_detail/218584215241451
  */
 
 
@@ -45,7 +46,7 @@ const replaceArrayElements = { //数组还原
 
         if (valid) {
             //还原引用的地方
-            for (let referPath of binding.referencePaths) {
+            for (let referPath of referencePaths) {
                 let { node, parent, parentPath } = referPath;
                 //父节点必须是成员表达式，且下标为Number
                 if (!types.isMemberExpression(parent, { "object": node }) || !types.isNumericLiteral(parent.property)) { return; };
@@ -54,9 +55,8 @@ const replaceArrayElements = { //数组还原
                 //排除类似：a[5]++
                 if (parentPath.parentPath.isUpdateExpression({ "argument": parent })) { return; }
             }
-            console.log("==============");
 
-            for (let referPath of binding.referencePaths) {
+            for (let referPath of referencePaths) {
                 let { parent, parentPath } = referPath;
                 let index = parent.property.value;
                 let replaceNode = init.elements[index];
