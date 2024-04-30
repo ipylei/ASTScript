@@ -1,4 +1,4 @@
-function test(cU, cV) {
+/* function test(cU, cV) {
     var cW = 1;
 
     while (cW !== 0) {
@@ -88,23 +88,23 @@ function test(cU, cV) {
 
 function test2(cU, cV) {
     var cW = 1;
-    var cZ = []; //case 1
-    var d0 = 0; //case 5
-    var d1 = 0; //case 6
-    while (d0 < cU) { //case 2
+    var cZ = [];                 //case 1
+    var d0 = 0;                  //case 5
+    var d1 = 0;                  //case 6
+    while (d0 < cU) {            //case 2
         cZ[(d0 + cV) % cU] = []; //case 7
-        d0++; //case 9
+        d0++;                    //case 9
     }
-    while (d1 < cU) {
-        var d2 = cU - 1; //case 8
+    while (d1 < cU) {            //case 3
+        var d2 = cU - 1;         //case 8
         while (d2 >= 0) {
             cZ[d1][(d2 + cV * d1) % cU] = cZ[d2]; //case 12
-            d2--; //case 13
+            d2--;                //case 13
         }
-        d1++; //case 11
+        d1++;                    //case 11
 
     }
-    return cZ;
+    return cZ;                   //case 4
 }
 
 
@@ -113,3 +113,24 @@ console.log(ret1);
 
 var ret2 = test2();
 console.log(ret2);
+ */
+
+
+function test3() {
+    var cW = 2;
+    while (cW !== 0) {
+        switch (cW) {
+            case 2:
+                cW = d0 < cU ? 7 : 3;
+                break;
+            case 7:
+                cZ[(d0 + cV) % cU] = [];
+                cW = 2;
+                break;
+
+
+        }
+    }
+}
+
+

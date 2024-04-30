@@ -41,6 +41,43 @@ const pluginDeclaratorSeparate =
       path.replaceWithMultiple(newNodes);
 
    },
+
+
+   AssignmentExpression: {
+      exit(path) {
+         let { parentPath, node } = path;
+         let { left, operator, right } = node;
+         // init时： var a=b=c;
+         // 这里还可以排除分号";"，即单个的情况a8=a9;
+         if (!parentPath.isVariableDeclarator({ "init": node })
+            // && !parentPath.isAssignmentExpression({ "right": node })   //right时：a=b=c=d;  
+         ) {
+            return;
+         }
+
+         // 操作符必须是=，左节点须是标识符，右节点可以不用是标识符
+         // if (!types.isIdentifier(left) || !types.isIdentifier(right) || operator != "=") {
+         if (!types.isIdentifier(left) || operator != "=") {
+            return;
+         }
+
+         //找祖先节点，即找到带分号的截止。 目的是为了在前面插入新的语句。
+         let ancestorPath = path.findParent(function (path) {
+            let val = path.isVariableDeclaration();
+            return val;
+         });
+         if (!ancestorPath) {
+            return;
+         }
+
+         // 在祖先节点前面插入
+         // 诸如var b1 = b2 = b3 = b4;的情况
+         //ancestorPath.node.kind => 添加上对应的var、let、const
+         ancestorPath.insertBefore(types.VariableDeclaration(ancestorPath.node.kind, [types.VariableDeclarator(left, right)]));
+         path.replaceWith(left);
+
+      }
+   }
 }
 traverse(ast, pluginDeclaratorSeparate);
 

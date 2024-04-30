@@ -7,6 +7,7 @@
 
     before：
         插件：三目运算符转if
+        插件：逗号表达式展开
 
  */
 
@@ -33,11 +34,31 @@ const code = fs.readFileSync(jsfile, "utf-8");
 let ast = parse(code);
 
 
+function containsSequenceExpression(path) {
+    let containsSequence = false;
+    // 深度优先遍历当前路径及其所有子路径
+    path.traverse({
+        "SequenceExpression|AssignmentExpression"(_path) {
+            containsSequence = true;
+            _path.stop(); // 找到逗号表达式后立即停止遍历
+        },
+    });
+    return containsSequence;
+}
+
+
 const pluginRemoveDeadCode = {
     //if语句、三目运算符
     "IfStatement|ConditionalExpression"(path) {
         let { consequent, alternate } = path.node;
         let testPath = path.get('test');
+
+        //不处理逗号表达式，赋值语句防止误删
+        if (testPath.isSequenceExpression() || testPath.isAssignmentExpression() || containsSequenceExpression(testPath)) {
+            return;
+        }
+
+
         const evaluateTest = testPath.evaluateTruthy();
         //直接替换为满足条件
         if (evaluateTest === true) {
@@ -56,7 +77,8 @@ const pluginRemoveDeadCode = {
                 path.replaceWithMultiple(alternate);
             }
             else {
-                console.log(node.loc.start.line);
+                // console.log(node.loc.start.line);
+                console.log("删除垃圾代码", path.node.loc.start.line);
                 path.remove();
             }
         }
@@ -66,8 +88,11 @@ const pluginRemoveDeadCode = {
     "LogicalExpression"(path) {
         let { left, operator, right } = path.node;
         let leftPath = path.get('left');
+        //不处理逗号表达式，赋值语句防止误删
+        if (leftPath.isSequenceExpression() || leftPath.isAssignmentExpression() || containsSequenceExpression(leftPath)) {
+            return;
+        }
         const evaluateLeft = leftPath.evaluateTruthy();
-
         if ((operator == "||" && evaluateLeft == true) || (operator == "&&" && evaluateLeft == false)) {
             path.replaceWith(left);
             return;
@@ -79,26 +104,17 @@ const pluginRemoveDeadCode = {
 
     //空语句、debugger；
     "EmptyStatement|DebuggerStatement"(path) {
-        console.log(path.node.loc.start.line);
+        console.log("删除垃圾代码", path.node.loc.start.line);
         path.remove();
     },
 
-    // case continue之后的语句删除
-    "ContinueStatement"(path){
-        if(!path.parentPath.isSwitchCase()){
-            return;
-        }
-        //获取后续的兄弟节点
-        let allNextSiblings = path.getAllNextSiblings();
-        for(let nextSibling of allNextSiblings){
-            nextSibling.remove();
-        }
-    },
 
     //变量声明语句
     "VariableDeclarator"(path) {
-        let { node, scope, parentPath } = path;
-        if (!parentPath.parentPath.isBlock()) {//过滤for..of等在循环内声明的变量语句
+        let { node, scope, parentPath, parent } = path;
+        let ancestryPath = parentPath.parentPath;
+        //目前发现这两个需要过滤  (for...of,  for...in)
+        if (ancestryPath.isForOfStatement({ left: parent }) || ancestryPath.isForInStatement({ left: parent })) {
             return;
         }
 
@@ -111,8 +127,11 @@ const pluginRemoveDeadCode = {
         //重新解析ast后，一定会有binding;
         let binding = scope.getBinding(id.name);
         let { referenced, constant, constantViolations } = binding;
-        if (!referenced) {
-            console.log(node.loc.start.line);
+        if (referenced || constantViolations.length > 1) {
+            return;
+        }
+        if (constant || constantViolations[0] == path) {
+            console.log("删除垃圾代码", path.node.loc.start.line);
             path.remove();
         }
     },
@@ -145,8 +164,20 @@ const pluginRemoveDeadCode = {
             console.log(node.loc.start.line);
             path.remove();
         }
-    }
+    },
 
+    //continue、break、return、throw
+    //如删除 continue; a +=2; a++; continue; = > continue;
+    "ContinueStatement|BreakStatement|ReturnStatement|ThrowStatement"(path) {
+        let AllNextSiblings = path.getAllNextSiblings();  //获取所有的后续兄弟节点
+        for (let nextSibling of AllNextSiblings) {
+            //变量提升.....
+            if (nextSibling.isFunctionDeclaration() || nextSibling.isVariableDeclaration({ kind: "var" })) {
+                continue;
+            }
+            nextSibling.remove();
+        }
+    },
 }
 traverse(ast, pluginRemoveDeadCode);
 

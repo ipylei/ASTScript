@@ -61,8 +61,9 @@ function isNodeLiteral(node) {
     //情况：如果是一个对象，且对象所有属性对应的值都是字面量，a = {name:"xxx",age:666}
     if (types.isObjectExpression(node)) {
         let { properties } = node;
+        //空对象比较危险，应该判断为false
         if (properties.length == 0) {
-            return true;
+            return false;
         }
         return properties.every(property => isNodeLiteral(property));
     }

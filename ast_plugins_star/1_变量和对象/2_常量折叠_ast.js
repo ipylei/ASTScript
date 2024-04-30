@@ -27,6 +27,8 @@ console.time("处理完成，耗时");
 let ast = parse(code);
 
 
+
+
 //简易版
 const pluginConstantFold = {
     "BinaryExpression|UnaryExpression|CallExpression|MemberExpression"(path) {
@@ -50,16 +52,34 @@ const pluginConstantFold = {
     },
 }
 
+
+// 检查路径或其任一子路径是否包含逗号表达式
+function containsSequenceExpression(path) {
+    let containsSequence = false;
+    // 深度优先遍历当前路径及其所有子路径
+    path.traverse({
+        SequenceExpression(_path) {
+            containsSequence = true;
+            _path.stop(); // 找到逗号表达式后立即停止遍历
+        }
+    });
+    return containsSequence;
+}
+
 //丰富版
 const pluginConstantFold2 = {
     //"Identifier"可以还原变量定义
     "Identifier|BinaryExpression|UnaryExpression|MemberExpression": {
         exit(path) {
+            if(containsSequenceExpression(path)){
+                return;
+            }
             if (path.isUnaryExpression({ operator: "-" }) || path.isUnaryExpression({ operator: "void" })) {
                 return;
             }
             const { confident, value } = path.evaluate();
             if (!confident) { return; }
+            if (typeof value == "function") { return; }
             if (typeof value == 'number' && (!Number.isFinite(value))) { return; }
             if (path.isIdentifier() && typeof value == "object") { return; }
             console.log(value)
@@ -67,6 +87,22 @@ const pluginConstantFold2 = {
         }
     },
 }
+
+/* 字符串连加
+
+示例：
+    a = "He";
+    a += "llo";
+    a += ",";
+    a += "AST!";
+
+结果：a = "hello,AST!";
+
+参考：
+    https://wx.zsxq.com/dweb2/index/topic_detail/2855814421844841
+    https://wx.zsxq.com/dweb2/index/topic_detail/411525214521288
+
+*/
 
 
 

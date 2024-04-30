@@ -32,7 +32,7 @@ const code = fs.readFileSync(jsfile, "utf-8");
 let ast = parse(code);
 
 // 参数path: SwitchStatement; number: case->test->value
-function getPrevItemCounts(path, number) {//找到指向当前case的上一个case的个数
+function getPrevItemCounts(path, number) {//找到指向当前case的上一个case的个数，即当前case的引用次数
     let counts = 0;
 
     let { cases } = path.node;
@@ -42,7 +42,7 @@ function getPrevItemCounts(path, number) {//找到指向当前case的上一个ca
 
     for (let item of cases) {
         let { test, consequent } = item;
-        let len = consequent.length; //case中的语句
+        let len = consequent.length; //case中的语句块
         if (!types.isExpressionStatement(consequent[len - 2])) { //倒数第2句必须为赋值语句
             continue;
         }
@@ -54,7 +54,10 @@ function getPrevItemCounts(path, number) {//找到指向当前case的上一个ca
         }
         //条件表达式的情况：如：cW = d1 < cU ? 8 : 4;
         if (types.isConditionalExpression(right)) {
-            if (right.consequent.value == number || right.alternate.value == number) {
+            if (right.consequent.value == number) {
+                counts++;
+            }
+            if (right.alternate.value == number) {
                 counts++;
             }
         }
@@ -141,6 +144,9 @@ const dealWithSwitch = {
                 if (prevItemCounts != 1) { continue; }
                 //示例：合并 case 1:{} <- case 5:{} 获取case为5的语句块(并删除)
                 let nextItem = getItemFromTestValue(path, value, true);//单线合并，删除下一个case。
+                if(!nextItem){
+                    continue;
+                }
                 consequent.splice(change_pos, 2);                      //删除 case1的后面两个节点
                 consequent.push(...nextItem.consequent);               //把case5的内容push到case1里面去
                 i = -1; //合并后，下次重新开始遍历所有的cases
@@ -152,6 +158,16 @@ const dealWithSwitch = {
             //示例:
             // case 2: {cW = d0 < cU ? 7 : 3; break;}
             // case 7: {cZ[(d0 + cV) % cU] = []; cW=2; break;}
+            /* ================================================》
+                    while (d0 < cU) {            //case 2
+                        cZ[(d0 + cV) % cU] = []; //case 7
+                        d0++;                    //case 9
+                        //...                    //case 2
+                    }
+                    cW = 3;                
+                    // cW = d1 < cU ? 8 : 4;     //case 3
+                    
+            */
             if (types.isConditionalExpression(right)) {
                 let nextTest = right.test;              //d0 < cU
                 let nextConsequent = right.consequent;  //数值为7 
@@ -159,7 +175,9 @@ const dealWithSwitch = {
 
                 let nextItem = getItemFromTestValue(path, nextConsequent.value, false);  //取出case 7
                 let nextItemBlock = nextItem.consequent;                                 //取出case 7 的 consequent(即语句块)
-                let next_change_pos = nextItemBlock.length - 2;                          //取出case 7 中的cW=2
+                let next_change_pos = nextItemBlock.length - 2;                          //case 7 中的cW=2的下标
+                
+                //必须是赋值语句(如:cW=2;)
                 if (!types.isExpressionStatement(nextItemBlock[next_change_pos]) || !types.isAssignmentExpression(nextItemBlock[next_change_pos].expression)) {
                     continue;
                 }
@@ -171,14 +189,15 @@ const dealWithSwitch = {
                 //获取case为7的语句块(并删除)
                 nextItem = getItemFromTestValue(path, nextConsequent.value, true);  //删除 case 7 
 
-                //构造while节点(最后两句不要)
+                //构造while节点(case 7的最后两句不要)
                 let whileNode = types.whileStatement(nextTest, types.blockStatement(nextItemBlock.slice(0, next_change_pos)));
-                //case 2的consequent节点的条件表达式 变成是赋值语句，且是不满足条件的赋值语句       
+                //case 2的consequent节点的条件表达式 变成是赋值语句，且是不满足条件的赋值语句(cW=3)
                 consequent[change_pos].expression.right = nextAlternate;
-                //将while节点插入到case 2中(插入到重新赋值cW=??? 之前)
+                //将while节点插入到case 2中(插入到重新赋值cW = 3; 前)
                 consequent.splice(change_pos, 0, whileNode);
                 i = -1; //合并后，下次重新开始遍历所有的cases
                 continue;
+                // break;
             }
 
         }

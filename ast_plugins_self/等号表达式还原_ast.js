@@ -62,9 +62,9 @@ const equalPlugin = {
 
             // 插入后的处理：c1 = c2 = c3 = c4 = function () { }; ==> 诸如c1 = c2 = c3 = c4;
             path.replaceWith(left);
-            console.log(">>>==========================");
-            console.log(ancestorPath.toString());
-            console.log("<<<==========================\n");
+            // console.log(">>>==========================");
+            // console.log(ancestorPath.toString());
+            // console.log("<<<==========================\n");
         }
     }
 }

@@ -19,7 +19,7 @@ console.time("处理完成，耗时");
 
 
 //将源代码解析为AST
-let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "数组元素还原_code.js");
+let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "数组元素还原_code2.js");
 console.log("encodeFile ===> ", encodeFile);
 
 const code = fs.readFileSync(encodeFile, "utf-8");
@@ -49,22 +49,38 @@ const replaceArrayElements = { //数组还原
             for (let referPath of referencePaths) {
                 let { node, parent, parentPath } = referPath;
                 //父节点必须是成员表达式，且下标为Number
-                if (!types.isMemberExpression(parent, { "object": node }) || !types.isNumericLiteral(parent.property)) { return; };
+                if (!types.isMemberExpression(parent, { "object": node }) || !types.isNumericLiteral(parent.property)) {
+                    //放宽点条件吧：如果是在赋值语句的右节点，则视为有效：yrx_$p = yrx_$n;
+                    if (!types.isAssignmentExpression(parent, { "right": node })) {
+                        return;
+                    }
+                };
                 //如果是lvar则不行， 如a[5] = 100;
-                if (parentPath.parentPath.isAssignmentExpression({ "left": parent })) { return; }
+                if (parentPath.parentPath.isAssignmentExpression({ "left": parent })) {
+                    return;
+                }
                 //排除类似：a[5]++
-                if (parentPath.parentPath.isUpdateExpression({ "argument": parent })) { return; }
+                if (parentPath.parentPath.isUpdateExpression({ "argument": parent })) {
+                    return;
+                }
             }
 
+            // 最后统一修改
+            var referCount = referencePaths.length;
             for (let referPath of referencePaths) {
                 let { parent, parentPath } = referPath;
+                if (!parent.property) {
+                    continue;
+                }
                 let index = parent.property.value;
                 let replaceNode = init.elements[index];
                 console.log(parentPath.parentPath.toString(), "====>", replaceNode.value || replaceNode.name || "其他类型");
                 parentPath.replaceWith(replaceNode);
+                referCount--;
             }
-
-            path.remove();
+            if(referCount == 0){
+                path.remove();
+            }
         }
     },
 
@@ -129,4 +145,4 @@ console.timeEnd("处理完成，耗时")
 let outputFile = path.join(__dirname, "output.js");
 let decodeFile = process.argv.length > 3 ? process.argv[3] : outputFile;
 console.log("decodeFile ===> ", decodeFile);
-// fs.writeFile(decodeFile, ouput, (err) => { });
+fs.writeFile(decodeFile, ouput, (err) => { });
