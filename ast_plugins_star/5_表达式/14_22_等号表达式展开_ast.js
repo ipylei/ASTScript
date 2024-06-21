@@ -26,23 +26,37 @@ const pluginAssignUnfold = {
 	{
 		exit(path) {
 			let { parentPath, node } = path;
-			
+
 			//必须是多个赋值的的情况
-			if (!parentPath.isAssignmentExpression({ right: node, operator: "=" })) {
+			if (!parentPath.isVariableDeclarator({ "init": node })
+				&& !parentPath.isAssignmentExpression({ right: node, operator: "=" })
+				// && !parentPath.isMemberExpression()
+			) {
 				return;
 			}
+
 			let { left, operator, right } = node;
+			console.log(">>>>", path.toString());
 
-			//操作符必须为=
-			if (operator != "=") return;
+			// let ancestorPath = path.findParent(p => p.isExpressionStatement());
+			let ancestorPath = path.findParent(p => p.isStatement());
+			if (!ancestorPath) { return; }
 
-			let expressionPath = path.findParent(p => p.isExpressionStatement());
-			if (!expressionPath) { return; }
+			// ancestorPath.insertBefore(types.ExpressionStatement(node));
 
-			expressionPath.insertBefore(types.ExpressionStatement(node));
+			// 在祖先节点前面插入
+			// 诸如var b1 = b2 = b3 = b4;的情况
+			if (ancestorPath.isVariableDeclaration()) {
+				//ancestorPath.node.kind => 添加上对应的var、let、const
+				ancestorPath.insertBefore(types.VariableDeclaration(ancestorPath.node.kind, [types.VariableDeclarator(left, right)]));
+			}
+			// 诸如c1 = c2 = c3 = c4 = function () { };
+			else {
+				ancestorPath.insertBefore(types.expressionStatement(node));
+			}
+
 			// 插入后的处理，需要补右边：c1 = c2 = c3 = c4 = function () { }; ==> 诸如c1 = c2 = c3 = c4;
-			// path.replaceWith(left); //这种还是差了点意思
-			path.replaceWith(right);
+			path.replaceWith(left);  // path.replaceWith(right); //这种还是差了点意思
 		}
 	}
 }
@@ -51,7 +65,7 @@ const pluginAssignUnfold = {
 traverse(ast, pluginAssignUnfold);
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments:false}).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")

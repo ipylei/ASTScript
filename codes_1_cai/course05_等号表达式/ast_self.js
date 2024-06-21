@@ -17,7 +17,7 @@ const traverse = require("@babel/traverse").default;
 //插入模块
 const types = require("@babel/types");
 
-let jsfile = path.join(__dirname, "code.js");
+let jsfile = path.join(__dirname, "code2.js");
 const code = fs.readFileSync(jsfile, "utf-8");
 console.time("处理完成，耗时");
 
@@ -66,7 +66,7 @@ const equalPlugin = {
             if (!types.isIdentifier(left) || operator != "=") {
                 return;
             }
-            console.log("=====");
+            console.log("=====", path.toString());
 
             //找祖先节点，即找到带分号的截止
             let ancestorPath = path.findParent(function (path) {

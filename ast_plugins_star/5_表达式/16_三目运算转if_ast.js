@@ -37,13 +37,15 @@ const ConditionToIf1 = {
 		}
 	},
 }
-traverse(ast, ConditionToIf1);
+// traverse(ast, ConditionToIf1);
 
 
 const ConditionToIf2 = {
 	ConditionalExpression: {
 		enter(path) {
-			console.log("-------->", path.toString());
+			// console.log("-------->", path.toString());
+			// console.log(">>>>>>>>>>>>>", path.type, path.node);
+
 			let { scope, node } = path;
 			let { test, consequent, alternate } = node;
 			//处理左边
@@ -81,7 +83,8 @@ const ConditionToIf2 = {
 			let ifStateNode = types.IfStatement(test, consequent, alternate);
 			let ret = path.replaceWithMultiple(ifStateNode);
 			// path.replaceWith(ifStateNode);
-			console.log(">>>>>>>>>>>>>", path.node);
+
+			// console.log(">>>>>>>>>>>>>", path.type, path.node);
 
 			path.skip(); //exit()遍历不加会堆栈溢出
 		}
@@ -137,13 +140,13 @@ const ConditionToIfTest = {
 
 			//替换失败，则ret.toString()为空
 			//替换成功，则ret.toString()为替换后的字符串
-			console.log("替换结果:", Boolean(ret.toString()));
+			console.log("替换结果:", Boolean(ret.toString()), ret.type);
 
 			console.log("替换的返回值: ", ret.toString());
 
 			//替换失败，则path.toString()不变
 			//替换成功，则path.toString()为空
-			console.log("替换后的path: ", path.toString());
+			// console.log("替换后的path: ", path.toString());
 
 			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			console.log(generate(ast, { comments: false }).code);

@@ -28,9 +28,9 @@ const equalPlugin = {
             let { left, operator, right } = node;
             // init时： var a=b=c;
             // right时：a=b=c=d;  
-            
+
             // 这里还可以排除分号";"，即单个的情况a8=a9;
-            if (!parentPath.isVariableDeclarator({ "init": node }) && !parentPath.isAssignmentExpression({ "right": node })) {
+            if (!parentPath.isVariableDeclarator({ "init": node }) && !parentPath.isAssignmentExpression({ "right": node, operator: "=" })) {
                 return;
             }
 
@@ -48,7 +48,7 @@ const equalPlugin = {
             if (!ancestorPath) {
                 return;
             }
-            
+
             // 在祖先节点前面插入
             // 诸如var b1 = b2 = b3 = b4;的情况
             if (ancestorPath.isVariableDeclaration()) {
@@ -78,6 +78,6 @@ traverse(ast, equalPlugin);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, { comments: false }).code;
 console.log(ouput);
 console.timeEnd("处理完成，耗时")

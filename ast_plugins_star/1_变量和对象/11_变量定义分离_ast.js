@@ -45,8 +45,10 @@ const pluginDeclaratorSeparate =
 
    AssignmentExpression: {
       exit(path) {
+         console.log("====>", path.toString());
          let { parentPath, node } = path;
          let { left, operator, right } = node;
+
          // init时： var a=b=c;
          // 这里还可以排除分号";"，即单个的情况a8=a9;
          if (!parentPath.isVariableDeclarator({ "init": node })
@@ -75,7 +77,6 @@ const pluginDeclaratorSeparate =
          //ancestorPath.node.kind => 添加上对应的var、let、const
          ancestorPath.insertBefore(types.VariableDeclaration(ancestorPath.node.kind, [types.VariableDeclarator(left, right)]));
          path.replaceWith(left);
-
       }
    }
 }
@@ -83,7 +84,7 @@ traverse(ast, pluginDeclaratorSeparate);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")
