@@ -37,14 +37,13 @@ const ConditionToIf1 = {
 		}
 	},
 }
-// traverse(ast, ConditionToIf1);
+traverse(ast, ConditionToIf1);
 
-var count = 0;
+
 const ConditionToIf2 = {
 	ConditionalExpression: {
 		enter(path) {
-			count++;
-			console.log("====>", path.toString());
+			console.log("-------->", path.toString());
 			let { scope, node } = path;
 			let { test, consequent, alternate } = node;
 			//处理左边
@@ -80,30 +79,104 @@ const ConditionToIf2 = {
 			}
 
 			let ifStateNode = types.IfStatement(test, consequent, alternate);
-			path.replaceWithMultiple(ifStateNode);
+			let ret = path.replaceWithMultiple(ifStateNode);
+			// path.replaceWith(ifStateNode);
+			console.log(">>>>>>>>>>>>>", path.node);
+
+			path.skip(); //exit()遍历不加会堆栈溢出
+		}
+	}
+}
+// traverse(ast, ConditionToIf2);
+
+
+var count = 0;
+const ConditionToIfTest = {
+	ConditionalExpression: {
+		enter(path) {
+			count++;
+			console.log("-------->", count, path.toString());
+			let { scope, node } = path;
+			let { test, consequent, alternate } = node;
+			//处理左边
+			//如果左边是多个句子(即逗号表达式)
+			if (types.isSequenceExpression(consequent)) {
+				let expressions = consequent.expressions;
+				let retBody = [];
+				for (let expression of expressions) {
+					retBody.push(types.ExpressionStatement(expression));
+				}
+				//添加上括号
+				consequent = types.BlockStatement(retBody);
+			}
+			else {
+				consequent = types.ExpressionStatement(consequent);
+				//添加上括号
+				consequent = types.BlockStatement([consequent]);
+			}
+
+			//处理右边
+			//如果右边是多个句子(即逗号表达式)
+			if (types.isSequenceExpression(alternate)) {
+				let expressions = alternate.expressions;
+				let retBody = [];
+				for (let expression of expressions) {
+					retBody.push(types.ExpressionStatement(expression));
+				}
+				alternate = types.BlockStatement(retBody);
+			}
+			else {
+				alternate = types.ExpressionStatement(alternate);
+				alternate = types.BlockStatement([alternate]);
+			}
+
+			let ifStateNode = types.IfStatement(test, consequent, alternate);
+			let ret = path.replaceWithMultiple(ifStateNode);
 			// path.replaceWith(ifStateNode);
 
+
+			//替换失败，则ret.toString()为空
+			//替换成功，则ret.toString()为替换后的字符串
+			console.log("替换结果:", Boolean(ret.toString()));
+
+			console.log("替换的返回值: ", ret.toString());
+
+			//替换失败，则path.toString()不变
+			//替换成功，则path.toString()为空
+			console.log("替换后的path: ", path.toString());
+
+			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			console.log(generate(ast, { comments: false }).code);
+			console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+			path.skip();
+
+
+
 			// scope.crawl();
+
 			// path替换成功的话，此时path.toString()为"", 因为此时path.node已经不是ConditionalExpression类型了
-			console.log("---->|||||||||", path.toString());
-			path.skip(); //exit()遍历不加会堆栈溢出
-			if (count >= 20) {
+			// path.skip(); //exit()遍历不加会堆栈溢出
+			// path.skip(); //不再遍历其子节点
+			// path.stop(); //不再进行后续向下遍历，但如果是exit()的方式，还是要回退的，参考下面count=1时的情况
+
+			/* if (count >= 2) {
 				path.stop();
-			}
+			} */
+
 
 		}
 	},
 
 	// 测试专用
-	IfStatement: {
-		enter(path) {
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-			console.log(path.toString());
-			console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-		}
-	}
+	/* 	IfStatement: {
+			exit(path) {
+				console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				console.log(path.toString());
+				console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+			}
+		} */
 }
-traverse(ast, ConditionToIf2);
+traverse(ast, ConditionToIfTest);
 
 
 
@@ -127,7 +200,11 @@ const ConditionToIf3 = {
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, opts = {
+	"compact": false,  // 是否压缩代码
+	"comments": false,  // 是否保留注释
+	"jsescOption": { "minimal": true },  //Unicode转义
+}).code
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")

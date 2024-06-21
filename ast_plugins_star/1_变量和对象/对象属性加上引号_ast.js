@@ -15,7 +15,7 @@ const traverse = require("@babel/traverse").default;
 //插入模块
 const types = require("@babel/types");
 
-let jsfile = path.join(__dirname, "4_对象属性加上引号_code.js");
+let jsfile = path.join(__dirname, "对象属性加上引号_code.js");
 const code = fs.readFileSync(jsfile, "utf-8");
 console.time("处理完成，耗时");
 let ast = parse(code);

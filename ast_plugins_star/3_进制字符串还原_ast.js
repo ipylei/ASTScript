@@ -29,9 +29,11 @@ let ast = parse(code);
 
 /* 字符串还原 */
 const pluginStringSimplify = {
+    // 处理 \x77\x36\x77\x35\x42\x51\x3d\x3d
     NumericLiteral(path) {
         let { node } = path;
         if (node.extra && /^0[obx]/i.test(node.extra.raw)) {
+            //console.log(path.toString());
             node.extra = undefined;
         }
     },
@@ -44,12 +46,17 @@ const pluginStringSimplify = {
             // delete path.node.extra;
             // path.node.extra.raw = `${node.extra.raw[0]}${path.node.extra.rawValue}${node.extra.raw[0]}`;
             
+            // 处理 '\u5220\u9664\u7248\u672C\u53F7\uFF0Cjs\u4F1A\u5B9A\u671F\u5F39\u7A97'
             if (/\\u/gi.test(node.extra.raw)) {
+                // console.log(path.toString());
                 // node.extra = undefined;
                 path.node.extra.raw = `${node.extra.raw[0]}${path.node.extra.rawValue}${node.extra.raw[0]}`;
 
             }
+
+            // 处理 '\x77\x36\x77\x35\x42\x51\x3d\x3d'
             else if (/\\[ux]/gi.test(node.extra.raw)) {
+                // console.log(path.toString());
                 node.extra = undefined;
             }
 

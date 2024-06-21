@@ -98,6 +98,7 @@ const dealWithSwitch = {
         let { discriminant } = node; //获取switch中的参数，如：switch(cW){...}
         //switch(arg)是字面量形式
         if (!types.isMemberExpression(discriminant)) { return; }
+        
         let { object, property } = discriminant;  //获取swith(xxx)中的xxx，这里为：s[x++]。object=>s, property=>x++
         let arrName = object.name;
         let binding = scope.getBinding(arrName);  //根据绑定，获取到代码s="3|1|2".split("|");

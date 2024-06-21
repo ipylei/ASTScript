@@ -127,7 +127,7 @@ const dealWithSwitch = {
             // 如果当前节点没有被引用的情况，直接可以删除
             let refer_cnt = getPrevItemCounts(path, test.value);
             if (i != 0 && refer_cnt == 0) {
-                path.node.cases.splice(i, 1);
+                path.node.cases.splice(i, 1);   //删除这个case节点
                 i = -1;
                 continue;
             }
@@ -141,7 +141,10 @@ const dealWithSwitch = {
             if (types.isNumericLiteral(right)) {
                 let value = right.value;                                //获取 value
                 let prevItemCounts = getPrevItemCounts(path, value);    //获取指向下一个case的引用个数，视频中是case5的引用个数。
-                if (prevItemCounts != 1) { continue; }
+                if (prevItemCounts != 1) { 
+                    continue; 
+                }
+
                 //示例：合并 case 1:{} <- case 5:{} 获取case为5的语句块(并删除)
                 let nextItem = getItemFromTestValue(path, value, true);//单线合并，删除下一个case。
                 if(!nextItem){

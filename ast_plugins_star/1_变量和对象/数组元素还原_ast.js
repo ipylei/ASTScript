@@ -142,7 +142,7 @@ console.log(ouput);
 console.timeEnd("处理完成，耗时")
 
 
-let outputFile = path.join(__dirname, "output.js");
-let decodeFile = process.argv.length > 3 ? process.argv[3] : outputFile;
-console.log("decodeFile ===> ", decodeFile);
-fs.writeFile(decodeFile, ouput, (err) => { });
+// let outputFile = path.join(__dirname, "output.js");
+// let decodeFile = process.argv.length > 3 ? process.argv[3] : outputFile;
+// console.log("decodeFile ===> ", decodeFile);
+// fs.writeFile(decodeFile, ouput, (err) => { });

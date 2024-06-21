@@ -28,8 +28,9 @@ function func1(p) {
 }
 
 let funcNames = ["func1"];
+
+//将函数名重新赋值给其他标识符的情况(目前只还原重复赋值的情况，本身函数调用交给专用插件还原!)
 const collect_deassign_func = {
-    //将函数名重新赋值给其他标识符
     // AssignmentExpression(path){
     "AssignmentExpression|VariableDeclarator"(path) {
         let { node, scope } = path;
@@ -37,10 +38,17 @@ const collect_deassign_func = {
         left = id || left;
         right = init || right;
 
-        if (operator && operator != "=") { return; }
-        if (!types.isIdentifier(left) || !types.isIdentifier(right)) { return; }
+        if (operator && operator != "=") { 
+            return; 
+        }
+        //左右两边必须为标识符?
+        if (!types.isIdentifier(left) || !types.isIdentifier(right)) { 
+            return; 
+        }
         //fW=c; fY=c; 
-        if (!funcNames.includes(right.name)) { return; }
+        if (!funcNames.includes(right.name)) { 
+            return; 
+        }
 
         //再把左节点加进去
         // funcNames.push(left.name);
@@ -51,10 +59,13 @@ const collect_deassign_func = {
         let { constantViolations, referencePaths } = binding;
         if (constantViolations.length > 1) { return; }
 
+
+        //对函数调用进行还原
         for (let referPath of referencePaths) {
             let { parentPath, node } = referPath;
             // 如fW=func; var fW=func; 然后这里将fW也加入进去
             if (parentPath.isAssignmentExpression({ "right": node, "operator": "=" }) || parentPath.isVariableDeclarator({ "init": node, })) {
+                //再把左节点加进去
                 funcNames.push(left.name);
                 continue;
             }

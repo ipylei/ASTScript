@@ -48,7 +48,7 @@ const pluginConstantFold = {
             return;
         }
         path.replaceWith(types.valueToNode(value));
-        ;
+        
     },
 }
 

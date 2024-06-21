@@ -77,6 +77,7 @@ const pluginFuncToVal = {
                 }
 
                 let arguments = parentPath.node.arguments;
+                //判断实参必须为字面量
                 if (arguments.length == 0 || !isNodeLiteral(arguments)) {
                     continue;
                 }

@@ -92,6 +92,7 @@ const pluginRemoveDeadCode = {
         if (leftPath.isSequenceExpression() || leftPath.isAssignmentExpression() || containsSequenceExpression(leftPath)) {
             return;
         }
+        
         const evaluateLeft = leftPath.evaluateTruthy();
         if ((operator == "||" && evaluateLeft == true) || (operator == "&&" && evaluateLeft == false)) {
             path.replaceWith(left);

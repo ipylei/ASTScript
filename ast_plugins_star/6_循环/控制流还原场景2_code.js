@@ -1,4 +1,4 @@
-/* function test(cU, cV) {
+ function test(cU, cV) {
     var cW = 1;
 
     while (cW !== 0) {
@@ -85,7 +85,7 @@
     }
 }
 
-
+/*
 function test2(cU, cV) {
     var cW = 1;
     var cZ = [];                 //case 1
@@ -116,7 +116,7 @@ console.log(ret2);
  */
 
 
-function test3() {
+/* function test3() {
     var cW = 2;
     while (cW !== 0) {
         switch (cW) {
@@ -132,5 +132,5 @@ function test3() {
         }
     }
 }
-
+ */
 
