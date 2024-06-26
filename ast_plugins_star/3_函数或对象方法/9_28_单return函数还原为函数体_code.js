@@ -13,7 +13,7 @@ function And (p, q, r) {
 }
 
 var bb = nm(a, b);
-var cc = mn(33, 44);
+var cc = mn(33, 44) * 2;
 let retval2 = And(111, 222, 333);
 
 

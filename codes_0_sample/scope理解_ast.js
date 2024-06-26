@@ -34,8 +34,9 @@ function logEnd() {
 // 遍历节点，使用enter方法
 traverse(ast, {
     //*
-    VariableDeclarator: {
+    NumericLiteral: {
         enter(path) {
+            var name = 1000;
             logStart();
             console.log("path.toString() => |||", path.toString());
 
@@ -103,6 +104,7 @@ traverse(ast, {
     //*/
 });
 
+// console.log(name);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });

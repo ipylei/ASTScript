@@ -7,4 +7,4 @@ var ay = {
   }
 };
 var aa = ay;
-az = ay;
+az = ay;   //只能或者说只应该还原紧挨着的

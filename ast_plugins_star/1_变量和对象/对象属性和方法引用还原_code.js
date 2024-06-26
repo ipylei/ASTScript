@@ -23,7 +23,10 @@ az = {
     "mVVbN": "flow/ov"
 };
 if (o["_cf_chl_opt"]["cLt"] !== 'd') {
-    if (az["TTUig"](az.KtMIh, "tHKBy")) o["_cf_chl_opt"]["cLt"] = 'd'; else function aH() {
-        aD["location"]["reload"]();
+    if (az["TTUig"](az.KtMIh, "tHKBy")) { 
+       console.log("函数体是二元表达式");
+    }
+    else if (az["gQHWc"](func1, arg1)){
+        console.log("函数体是函数调用");
     }
 } 

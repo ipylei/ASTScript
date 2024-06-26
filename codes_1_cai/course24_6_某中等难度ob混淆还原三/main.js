@@ -42,16 +42,13 @@ const dealWithSpCall =
 			}
 
 			let argumentPaths = parentPath.get('arguments');
-
 			if (argumentPaths.length != 2) {
 				canRemoved = false;
 				continue
 			}
 
 			let secondArgPath = argumentPaths[1];
-
 			let key = "";
-
 			if (secondArgPath.isCallExpression()) {
 				key = 'arguments.0';
 			}
@@ -64,6 +61,7 @@ const dealWithSpCall =
 				break;
 			}
 
+			
 			let { confident, value } = secondArgPath.get(key).evaluate();
 
 			if (!confident) 
@@ -83,9 +81,9 @@ const dealWithSpCall =
 
 	}
 }
-
 traverse(ast, dealWithSpCall);
 
+// 常量折叠
 const constantFold = {
 
 	"Identifier|BinaryExpression|UnaryExpression"(path) {
@@ -111,7 +109,6 @@ const constantFold = {
 
 	}
 }
-
 traverse(ast, constantFold);
 
 
@@ -121,5 +118,6 @@ let { code } = generator(ast, opts = {
 	"comments": false,  // 是否保留注释
 	"jsescOption": { "minimal": true },  //Unicode转义
 });
+console.log(code);
 
-fs.writeFile(decodeFile, code, (err) => { });
+// fs.writeFile(decodeFile, code, (err) => { });

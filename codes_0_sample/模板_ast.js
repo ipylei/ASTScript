@@ -22,23 +22,24 @@ console.time("处理完成，耗时");
 
 
 //将源代码解析为AST
-let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "input.js");
-let decodeFile = process.argv.length > 3 ? process.argv[3] : path.join(__dirname, "output.js");
+let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "1_input.js");
+let decodeFile = process.argv.length > 3 ? process.argv[3] : path.join(__dirname, "1_output.js");
 let decodeFileName = decodeFile.split("\\").at(-1);
-let step = decodeFileName.match(/^\d+/)?.at(0);
+let step = parseInt(decodeFileName.match(/^\d+/)?.at(0));
 
 const code = fs.readFileSync(encodeFile, "utf-8");
 let ast = parse(code);
 const Plugin = {
     FunctionDeclaration(path) {
+        console.log("============>", path.toString());
+
         let { node, parentPath, scope } = path;
 
         let binding = scope.getBinding("a");
         let pbinding = parentPath.scope.getBinding("a");
-        console.log("============");
     }
 }
-traverse(ast, Plugin);
+step === 1 && traverse(ast, Plugin);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });

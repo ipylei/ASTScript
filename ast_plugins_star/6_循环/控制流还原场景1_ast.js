@@ -58,7 +58,9 @@ const pluginContrlFlowRestore = {
             property = right.callee.property.name || right.callee.property.value;
             argument = right.arguments[0].value;
         }
+        
         let arrayFlow = object[property](argument);  //开始计算：结果为[3,1,2]
+        console.log("====> ", arrayFlow);
 
         //固定写死的情况
         // let arrayFlow = [3, 1, 2]; // 针对特定的，固定写死也可以的!
@@ -68,6 +70,7 @@ const pluginContrlFlowRestore = {
         arrayFlow.forEach(function (index) {
             //遍历case节点组成的列表，筛选出对应下标的case节点
             let target_list = cases.filter(function (c) { return c.test.value == index; });
+            
             //.filter 方法返回一个列表，所以取下标[0]
             if (target_list.length > 0) {
                 let caseBody = target_list[0].consequent;        //caseBody是一个列表
@@ -91,7 +94,7 @@ traverse(ast, pluginContrlFlowRestore);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log(ouput);
 
 // fs.writeFileSync("result.js", ouput);

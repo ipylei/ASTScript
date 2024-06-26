@@ -31,8 +31,9 @@ const code = fs.readFileSync(jsfile, "utf-8");
 
 let ast = parse(code);
 
+// 找到指向当前case的上一个case的个数
 // 参数path: SwitchStatement; number: case->test->value
-function getPrevItemCounts(path, number, targetList) {//找到指向当前case的上一个case的个数
+function getPrevItemCounts(path, number, targetList) {
     let counts = 0;
 
     let { cases } = path.node;
@@ -124,9 +125,8 @@ const dealWithSwitch = {
             property = right.callee.property.name || right.callee.property.value;
             argument = right.arguments[0].value;
         }
+
         let arrayFlow = object[property](argument);  //开始计算：结果为[3,1,2]
-
-
         //后面都是根据这个操作
         console.log("=====>", arrayFlow);
 
@@ -177,7 +177,7 @@ const dealWithSwitch = {
 
                 let nextItem = getItemFromTestValue(path, nextConsequent.value, false);  //取出case 7
                 let nextItemBlock = nextItem.consequent;                                 //取出case 7 的 consequent(即语句块)
-                let next_change_pos = nextItemBlock.length - 2;                               //取出case 7 中的cW=2
+                let next_change_pos = nextItemBlock.length - 2;                          //取出case 7 中的cW=2
                 if (!types.isExpressionStatement(nextItemBlock[next_change_pos]) || !types.isAssignmentExpression(nextItemBlock[next_change_pos].expression)) {
                     continue;
                 }
@@ -209,7 +209,7 @@ traverse(ast, dealWithSwitch);
 console.log("======================================");
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log(ouput);
 
 // fs.writeFileSync("result.js", ouput);

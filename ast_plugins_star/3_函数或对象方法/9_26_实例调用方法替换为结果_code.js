@@ -8,6 +8,9 @@ var c = ["asd", "sss"].concat("aaa");
 var d = m.concat("aaa");                         //不应该被还原
 
 
+let a1 = Math["round"](1);
+let b1 = Math["round"](1);
+
 
 //下面的不能还原
 // function And (p, q, r) {

@@ -1,6 +1,6 @@
 // var N = {};
 var M;
-N = {};
+var N = {};
 N['pjJaj'] = function(O, P) {
     return O !== P;
 };

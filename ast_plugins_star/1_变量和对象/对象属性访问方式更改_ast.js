@@ -40,7 +40,7 @@ const pluginIdentifierToLiteral = {
 
     //给属性加上引号：a={name:"leizi"} ===> a={"name":"leizi"}
     //其实感觉单独提取出去比较合适
-    ObjectProperty:
+   /*  ObjectProperty:
     {
         exit(path) {
             let { node } = path;
@@ -56,7 +56,7 @@ const pluginIdentifierToLiteral = {
                 return;
             }
         }
-    },
+    }, */
 }
 
 

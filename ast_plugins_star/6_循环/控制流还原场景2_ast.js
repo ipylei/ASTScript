@@ -31,8 +31,10 @@ const code = fs.readFileSync(jsfile, "utf-8");
 
 let ast = parse(code);
 
+
+// 找到指向当前case的上一个case的个数，即当前case的引用次数
 // 参数path: SwitchStatement; number: case->test->value
-function getPrevItemCounts(path, number) {//找到指向当前case的上一个case的个数，即当前case的引用次数
+function getPrevItemCounts(path, number) {
     let counts = 0;
 
     let { cases } = path.node;
@@ -161,9 +163,10 @@ const dealWithSwitch = {
             //示例:
             // case 2: {cW = d0 < cU ? 7 : 3; break;}
             // case 7: {cZ[(d0 + cV) % cU] = []; cW=2; break;}
-            /* ================================================》
+            /* ====================等价替换============================》
                     while (d0 < cU) {            //case 2
                         cZ[(d0 + cV) % cU] = []; //case 7
+
                         d0++;                    //case 9
                         //...                    //case 2
                     }
@@ -213,7 +216,7 @@ traverse(ast, dealWithSwitch);
 console.log("======================================");
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log(ouput);
 
 // fs.writeFileSync("result.js", ouput);

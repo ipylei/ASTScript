@@ -22,7 +22,7 @@ console.time("处理完成，耗时");
 
 let VAR_NODE = template(`var A = B;`);
 
-let jsfile = path.join(__dirname, "自执行函数实参还原_code2.js");
+let jsfile = path.join(__dirname, "自执行函数实参还原_code.js");
 const code = fs.readFileSync(jsfile, "utf-8");
 let ast = parse(code);
 

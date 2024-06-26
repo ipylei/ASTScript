@@ -28,20 +28,30 @@ const pluginFuncNormalCall = {
     CallExpression(path) {
         let { callee, arguments } = path.node;
         if (!types.isMemberExpression(callee)) return;
-        if (arguments.length < 1 || !types.isIdentifier(arguments[0], { "name": "undefined" })) return;
-
-        let { object, property } = callee;
-        if (!types.isIdentifier(object)) {
+        if (arguments.length < 1
+            || (!types.isIdentifier(arguments[0], { "name": "undefined" }) && !types.isNullLiteral(arguments[0]))
+        ) {
             return;
         }
 
+        let { object, property } = callee;
+        //必须是 func.apply()格式？ 其实xx.func.apply()格式也可以
+        if (!types.isIdentifier(object) && !types.isMemberExpression(object)) {
+            return;
+        }
+
+        let oldString = path.toString();
+
         let mode = property.name || property.value;
         if (mode == "apply") {
-            path.replaceWith(types.callExpression(callee.object, arguments[1].elements));
+            let ret = path.replaceWith(types.callExpression(object, arguments[1].elements));
+            console.log(oldString, "=====>", ret.toString());
         }
         else if (mode == "call") {
-            path.replaceWith(types.callExpression(object, arguments.slice(1)));
+            let ret = path.replaceWith(types.callExpression(object, arguments.slice(1)));
+            console.log(oldString, "---->", ret.toString());
         }
+
     }
 }
 traverse(ast, pluginFuncNormalCall);
@@ -50,7 +60,7 @@ traverse(ast, pluginFuncNormalCall);
 // const { code: ouput } = generate(ast, { minified: true });
 const ouput = generate(ast, opts = {
     "compact": false,  // 是否压缩代码
-    "comments": false,  // 是否保留注释
+    "comments": true,  // 是否保留注释
     "jsescOption": { "minimal": true },  //Unicode转义
 }).code;
 

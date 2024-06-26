@@ -85,7 +85,7 @@ const pluginMergeObjProperty = {
 traverse(ast, pluginMergeObjProperty);
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")

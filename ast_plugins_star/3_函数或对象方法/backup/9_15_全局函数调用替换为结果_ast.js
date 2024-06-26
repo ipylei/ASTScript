@@ -61,7 +61,7 @@ const evaluateGlobalFunc = {//系统全局函数的还原，仅限单个名称�
 
         let args = [];
         arguments.forEach((ele, index) => { args[index] = ele.value; }); //获取实参
-        let value = func.apply(null, args); //计算结果
+        let value = func.apply(null, args);         //计算结果
         if (typeof value == "function" || typeof value == "undefined") return;
         path.replaceWith(types.valueToNode(value)); //替换
     }

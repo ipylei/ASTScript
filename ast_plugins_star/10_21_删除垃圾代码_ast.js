@@ -167,7 +167,7 @@ const pluginRemoveDeadCode = {
         }
     },
 
-    //continue、break、return、throw
+    //continue、break、return、throw 后面的兄弟节点
     //如删除 continue; a +=2; a++; continue; = > continue;
     "ContinueStatement|BreakStatement|ReturnStatement|ThrowStatement"(path) {
         let AllNextSiblings = path.getAllNextSiblings();  //获取所有的后续兄弟节点

@@ -31,25 +31,27 @@ let ast = parse(code);
 
 //简易版
 const pluginConstantFold = {
-    "BinaryExpression|UnaryExpression|CallExpression|MemberExpression"(path) {
-        // 排除一元表达式中诸如 m = -1; m = void 0这种情况;
-        if (path.isUnaryExpression({ operator: "-" }) || path.isUnaryExpression({ operator: "void" })) {
-            return;
-        }
-        const { confident, value } = path.evaluate();
-        if (!confident) {
-            return;
-        }
+    "BinaryExpression|UnaryExpression|CallExpression|MemberExpression": {
+        exit(path) {
+            // 排除一元表达式中诸如 m = -1; m = void 0这种情况;
+            if (path.isUnaryExpression({ operator: "-" }) || path.isUnaryExpression({ operator: "void" })) {
+                return;
+            }
+            const { confident, value } = path.evaluate();
+            if (!confident) {
+                return;
+            }
 
-        if (path.isIdentifier() && typeof value == "object") {
-            return;
+            if (path.isIdentifier() && typeof value == "object") {
+                return;
+            }
+            if (typeof value == 'number' && (!Number.isFinite(value))) {
+                return;
+            }
+            path.replaceWith(types.valueToNode(value));
+
         }
-        if (typeof value == 'number' && (!Number.isFinite(value))) {
-            return;
-        }
-        path.replaceWith(types.valueToNode(value));
-        
-    },
+    }
 }
 
 
@@ -71,7 +73,7 @@ const pluginConstantFold2 = {
     //"Identifier"可以还原变量定义
     "Identifier|BinaryExpression|UnaryExpression|MemberExpression": {
         exit(path) {
-            if(containsSequenceExpression(path)){
+            if (containsSequenceExpression(path)) {
                 return;
             }
             if (path.isUnaryExpression({ operator: "-" }) || path.isUnaryExpression({ operator: "void" })) {

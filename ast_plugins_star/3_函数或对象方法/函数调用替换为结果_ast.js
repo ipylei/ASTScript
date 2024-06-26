@@ -3,6 +3,8 @@
     插件15(全局函数调用替换为结果)：https://wx.zsxq.com/dweb2/index/topic_detail/584585888158484
     
     before:
+        【*】插件：变量引用还原
+
         插件：函数表达式 => 函数声明
         插件：函数使用call和apply进行调用
  */
@@ -34,7 +36,7 @@ const pluginFuncToVal = {
     // 插件9：https://wx.zsxq.com/dweb2/index/topic_detail/181581428844442
     // 这里不搞var a = function(){}; 或者var a; a = function(){}。 是因为两者都有可能重新赋值
     FunctionDeclaration(path) {
-        let { node, parentPath } = path;
+        let { node, parentPath, scope } = path;
         let { id, body } = node;
         let define_line = node.loc.start.line;
         let func_name = node.id.name;
@@ -46,9 +48,18 @@ const pluginFuncToVal = {
         }
 
         const binding = parentPath.scope.getBinding(id.name);
-        if (!binding || !binding.constant)
-            return;
+        // console.log("parentPath.scope.path=> ", parentPath.scope.path.toString());
+        // console.log("===> call", binding.referencePaths[0].parentPath.toString());
+        // console.log("============================================================");
+        // let binding1 = scope.getBinding(id.name)
+        // console.log("path.scope.path=> ", scope.path.toString());
+        // console.log("===> call", binding1.referencePaths[0].parentPath.toString());
+        // return;
 
+        if (!binding || !binding.constant){
+            return;
+        }
+        
         //没有被使用的情况
         // if (!binding.referenced && !parentPath.isProgram()) {
         if (!binding.referenced) {
@@ -85,12 +96,12 @@ const pluginFuncToVal = {
                 let value = eval(parentPath.toString());
                 if (typeof value == "function" || typeof value == "undefined") { continue; }
                 if (!['string', 'number', 'boolean'].includes(typeof value)) { continue; }
-                
+
                 console.log("局部函数替换为结果=>", parentPath.toString(), "------->", value);
                 parentPath.replaceWith(types.valueToNode(value));
                 referCount--;
             }
-            
+
             if (referCount == 0) {
                 path.remove();
             } else {
@@ -110,7 +121,7 @@ const pluginFuncToVal = {
         if (!types.isIdentifier(callee) || callee.name == "eval") return;
         //判断实参是否全部为字面量。过滤掉参数为0的原因是这些函数大多数结果充满不确定性
         if (arguments.length == 0 || !isNodeLiteral(arguments)) return;
-
+        
         let func = this[callee.name];                                     //根据函数名获取本地Global函数
         if (typeof func !== "function") { return; }                       //如果不是全局函数，则返回
         // let args = arguments.map(x => x.value);                        //获取实参
@@ -127,7 +138,7 @@ traverse(ast, pluginFuncToVal);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, { comments: false }).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")

@@ -249,6 +249,7 @@ const callToString =
 			
 		}
 	},
+	
 	AssignmentExpression:{
 	exit(path)
 	{

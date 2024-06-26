@@ -19,7 +19,7 @@ console.time("处理完成，耗时");
 
 
 //将源代码解析为AST
-let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "数组元素还原_code2.js");
+let encodeFile = process.argv.length > 2 ? process.argv[2] : path.join(__dirname, "数组元素还原_code.js");
 console.log("encodeFile ===> ", encodeFile);
 
 const code = fs.readFileSync(encodeFile, "utf-8");

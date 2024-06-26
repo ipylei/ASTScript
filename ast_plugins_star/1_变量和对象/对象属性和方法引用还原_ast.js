@@ -53,6 +53,8 @@ function savePropertiesToObject(properties, newMap) {
             if (body.length == 1 && types.isReturnStatement(body[0])) {
                 // 获取到return语句后面的值
                 let argument = body[0].argument;
+
+                //如果是形如: return ax(ay);
                 if (types.isCallExpression(argument)) {
                     newMap.set(propKey, "Call");
                 }
@@ -177,7 +179,7 @@ traverse(ast, plugintraceAndParseObj);
 
 //将AST还原成JavaScript代码
 // const { code: ouput } = generate(ast, { minified: true });
-const ouput = generate(ast).code;
+const ouput = generate(ast, {comments: false}).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时")
