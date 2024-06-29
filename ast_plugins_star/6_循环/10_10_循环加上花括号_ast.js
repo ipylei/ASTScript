@@ -29,7 +29,7 @@ const standardLoop =
     //循环语句加上{}
     "ForStatement|WhileStatement|ForInStatement|ForOfStatement"({ node }) {
         if (!types.isBlockStatement(node.body)) {
-            node.body = types.BlockStatement([node.body]);
+            node.body = types.blockStatement([node.body]);
         }
     },
 
@@ -39,11 +39,11 @@ const standardLoop =
         const alternate = path.get("alternate");
         //给if加上{}
         if (!consequent.isBlockStatement()) {
-            consequent.replaceWith(types.BlockStatement([consequent.node]));
+            consequent.replaceWith(types.blockStatement([consequent.node]));
         }
         //给else加上{}
         if (alternate.node !== null && !alternate.isBlockStatement()) {
-            alternate.replaceWith(types.BlockStatement([alternate.node]));
+            alternate.replaceWith(types.blockStatement([alternate.node]));
         }
     },
 }

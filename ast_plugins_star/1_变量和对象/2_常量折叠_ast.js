@@ -41,7 +41,7 @@ const pluginConstantFold = {
             if (!confident) {
                 return;
             }
-
+ 
             if (path.isIdentifier() && typeof value == "object") {
                 return;
             }

@@ -89,7 +89,7 @@ const reSolveFunctionExpression = {
                     canbeRemoved = false;
                     continue;
                 }
-                let BinaryNode = types.BinaryExpression(operator, arguments[0], arguments[1]);
+                let BinaryNode = types.binaryExpression(operator, arguments[0], arguments[1]);
                 callPath.replaceWith(BinaryNode);
                 callPath.scope.crawl();
             }

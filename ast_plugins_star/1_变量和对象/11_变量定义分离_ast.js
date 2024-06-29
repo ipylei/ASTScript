@@ -35,7 +35,7 @@ const pluginDeclaratorSeparate =
 
       let newNodes = [];
       for (const varNode of declarations) {
-         let newDeclartionNode = types.VariableDeclaration(kind, [varNode]);
+         let newDeclartionNode = types.variableDeclaration(kind, [varNode]);
          newNodes.push(newDeclartionNode);
       }
       path.replaceWithMultiple(newNodes);
@@ -75,7 +75,7 @@ const pluginDeclaratorSeparate =
          // 在祖先节点前面插入
          // 诸如var b1 = b2 = b3 = b4;的情况
          //ancestorPath.node.kind => 添加上对应的var、let、const
-         ancestorPath.insertBefore(types.VariableDeclaration(ancestorPath.node.kind, [types.VariableDeclarator(left, right)]));
+         ancestorPath.insertBefore(types.variableDeclaration(ancestorPath.node.kind, [types.variableDeclarator(left, right)]));
          path.replaceWith(left);
       }
    }

@@ -1,5 +1,6 @@
 /* 
-    插件：无
+    before: 
+      插件：对象属性合并
  */
 
 
@@ -70,7 +71,7 @@ function deassign_object(leftNode, rightNode, nextSibling) {
    }
 }
 
-pliginRenameObj2 = {
+const pliginRenameObj2 = {
    /* 
     _0x5f4ce4 = {
        "arkXl": _0x5a09c0["KKLDa"]

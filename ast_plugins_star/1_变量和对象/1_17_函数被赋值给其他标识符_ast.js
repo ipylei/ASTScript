@@ -110,7 +110,8 @@ const collect_deassign_func = {
         }
         //直接eval，如果缺环境，让其主动报错
         eval(sourceCode);
-
+        
+        //找出赋值给了哪些变量，然后还原
         parentPath.traverse({
             "AssignmentExpression|VariableDeclarator"(path) {
                 let { node, scope } = path;
@@ -194,3 +195,12 @@ console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
 console.log(ouput);
 console.timeEnd("处理完成，耗时");
 
+
+
+/*  思考
+var az = {}
+var a = az;
+
+1.根据var az={}找到 var a=az；然后使用az还原a的引用？
+2.根据var a=za找到 var az={}，然后还原a的引用？
+*/

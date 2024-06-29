@@ -1,1 +1,0 @@
-var a={"name":"lezi","age":66};

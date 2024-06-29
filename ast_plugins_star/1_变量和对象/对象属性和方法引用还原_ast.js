@@ -7,8 +7,8 @@
         1.function(){return a&b&c;}
 
     before:
-        (*)插件：属性访问方式更改
-        (*)插件：属性合并
+        (*)插件：对象属性访问方式更改
+        (*)插件：对象属性合并
 
 
         (*)插件：变量定义分离
@@ -144,7 +144,9 @@ const plugintraceAndParseObj = {
         else {
             var { left, operator, right } = node;
             if (!parentPath.isExpressionStatement()) { return; }
-            if (!types.isIdentifier(left) || operator != "=" || !types.isObjectExpression(right)) { return; }
+            if (!types.isIdentifier(left) || operator != "=" || !types.isObjectExpression(right)) { 
+                return; 
+            }
         }
         let name = left.name;
         let binding = scope.getBinding(name);

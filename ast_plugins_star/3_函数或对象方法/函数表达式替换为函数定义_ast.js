@@ -42,7 +42,7 @@ const pluginVarDeclarToFuncDeclar =
         }
 
         let { params, body } = init;
-        let newNode = types.FunctionDeclaration(id, params, body);
+        let newNode = types.functionDeclaration(id, params, body);
         path.replaceWith(newNode);
         scope.crawl();
     }

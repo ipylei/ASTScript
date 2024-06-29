@@ -1,6 +1,6 @@
 
 
-/* function add(a, b) {
+function add(a, b) {
   console.log("hello world -> add");
   return a + b;
 }
@@ -37,7 +37,7 @@ console.log("------------------");
 
 
 let ret5 = parseInt("123456", 16);  
-*/
+
 
 let a = Math["round"](1);
 let b = Math["round"](1);

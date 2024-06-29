@@ -16,7 +16,7 @@ const { isNodeLiteral, isNodePure, color } = require("../../../ast_plugins_star/
 console.time("处理完成，耗时");
 
 
-let jsfile = path.join(__dirname, "t2_code.js");
+let jsfile = path.join(__dirname, "input_code.js");
 // let jsfile = path.join(__dirname, "output1_解密函数还原.js");
 const code = fs.readFileSync(jsfile, "utf-8");
 let ast = parse(code);

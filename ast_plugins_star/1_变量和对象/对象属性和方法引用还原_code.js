@@ -30,3 +30,8 @@ if (o["_cf_chl_opt"]["cLt"] !== 'd') {
         console.log("函数体是函数调用");
     }
 } 
+
+
+
+var m = 66;
+let ret = m;
