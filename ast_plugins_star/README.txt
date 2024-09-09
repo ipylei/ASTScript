@@ -33,7 +33,7 @@ ob混淆专题：https://wx.zsxq.com/dweb2/index/tags/ob%E6%B7%B7%E6%B7%86%E4%B8
 
 
 
-不太常用的插件：
+seldom plugin：
     13.合并变量的声明与定义 
         https://wx.zsxq.com/dweb2/index/topic_detail/814458844281122  (缺点：这里的声明与定义必须是紧挨着)
 
@@ -44,10 +44,10 @@ ob混淆专题：https://wx.zsxq.com/dweb2/index/tags/ob%E6%B7%B7%E6%B7%86%E4%B8
         https://wx.zsxq.com/dweb2/index/topic_detail/184211511258112  (缺点：这个数组不能有改变, 如:a = [1, 2, 3]; a[2]=3)
 
     24.部分常量运算合并 (部分常量折叠)
-        https://wx.zsxq.com/dweb2/index/topic_detail/415442454152148 (感觉用处不大)
+        https://wx.zsxq.com/dweb2/index/topic_detail/415442454152148 (seldom)
 
     24.if语句下沉
-        https://wx.zsxq.com/dweb2/index/topic_detail/184288155855112 (感觉用处不大)
+        https://wx.zsxq.com/dweb2/index/topic_detail/184288155855112 (seldom)
     
     27.switch只有一个case时还原
         https://wx.zsxq.com/dweb2/index/topic_detail/581545425848114
