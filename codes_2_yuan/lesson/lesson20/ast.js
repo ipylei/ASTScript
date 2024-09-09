@@ -248,13 +248,13 @@ const ouput = generate(ast, opts = {
 
 // const ouput = generate(ast).code;
 console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n");
-// console.log(ouput);
+console.log(ouput);
 console.timeEnd("处理完成，耗时")
 
 
 // console.log("encodeFile ===> ", encodeFile);
 // console.log("decodeFile ===> ", decodeFile);
-fs.writeFile(decodeFile, ouput, (err) => { });
+// fs.writeFile(decodeFile, ouput, (err) => { });
 
 
 

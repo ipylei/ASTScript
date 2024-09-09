@@ -7,3 +7,6 @@ function a(p1, p2) {
 a(2, 3);
 a(2, 4);
 
+/* 
+hello world
+*/

@@ -18,7 +18,7 @@ console.time("处理完毕，耗时");
 
 // let { code } = generate(ast, opts = { jsescOption: { "minimal": true } });
 const { code } = generate(ast, {
-    minified: true, 
+    minified: false, 
     // compact: true,
     comments: false
 });

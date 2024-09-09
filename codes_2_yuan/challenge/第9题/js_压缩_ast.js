@@ -6,7 +6,7 @@ const types = require("@babel/types");
 const generate = require("@babel/generator").default;
 
 //将源代码解析为AST
-process.argv.length > 2 ? encodeFile = process.argv[2] : encodeFile = path.join(__dirname, "1_input.js");
+process.argv.length > 2 ? encodeFile = process.argv[2] : encodeFile = path.join(__dirname, "env.js");
 console.log("encodeFile ===> ", encodeFile);
 
 
@@ -17,15 +17,11 @@ console.time("处理完毕，耗时");
 
 
 // let { code } = generate(ast, opts = { jsescOption: { "minimal": true } });
-const { code } = generate(ast, {
-    minified: true, 
-    // compact: true,
-    comments: false
-});
+const { code } = generate(ast, { minified: true, compact: true });
 // const { code } = generate(ast, { compact: true });
 console.log(code);
 console.timeEnd("处理完毕，耗时");
 
-process.argv.length > 3 ? decodeFile = process.argv[3] : decodeFile = path.join(__dirname, "output.js");
+process.argv.length > 3 ? decodeFile = process.argv[3] : decodeFile = path.join(__dirname, "env_yasuo.js");
 console.log("decodeFile ===> ", decodeFile);
-// fs.writeFile(decodeFile, code, (err) => { });
+fs.writeFile(decodeFile, code, (err) => { });
