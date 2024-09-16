@@ -1,5 +1,4 @@
 // https://wx.zsxq.com/dweb2/index/topic_detail/411245288241448
-// 参考：E:\Learning相应资料\Learn_Spider相应资料\知识星球\知识星球-蔡老板\函数名还原
 
 
 const fs = require("fs");
