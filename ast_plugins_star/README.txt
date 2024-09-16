@@ -1,3 +1,6 @@
+更多参考蔡老板知识星球：https://wx.zsxq.com/group/48415254524248
+
+
 入门指引：https://wx.zsxq.com/dweb2/index/topic_detail/841125151558112
     爬虫Chrome插件：https://mp.weixin.qq.com/s?__biz=MzAwNTY1OTg0MQ==&mid=2647563166&idx=1&sn=6330407705c77366581d74be50a3088c&chksm=83237630b454ff2697105b3a3418c8aebb525b200d461a6db8a43e87dabfd4ab601758d83fd3&scene=21#wechat_redirect
     浏览器执行AST插件：https://mp.weixin.qq.com/s/5WcUWSkDEXQj6ctwINNdfw
